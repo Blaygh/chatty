@@ -63,12 +63,25 @@ void save_text(const T& buffer, ServerState& s_state,const std::string &userName
 
 }
 
+
+//print all users being handled by server
 void active_users (ServerState& s_state){
     for (auto& element: s_state.user_state){
         std::string user = element.first;
         std::cout<<user;
     }
 }
+
+
+//prints current time
+void time_log(){
+         auto now = std::chrono::system_clock::now();
+        std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+
+        std::cout<<std::ctime(&now_time);
+}
+
+
 
 // Echoes back all received WebSocket messages
 void
@@ -158,6 +171,7 @@ do_session(tcp::socket socket, ServerState &s_state, std::mutex &client_mtx)
 
         for(auto &user: s_state.user_state){
             std::queue<boost::beast::flat_buffer> &messages = user.second;
+            
             while(!messages.empty()) {
                 beast::flat_buffer &message = messages.front();
                 std::cout << beast::make_printable(message.data()) << std::endl;
@@ -256,5 +270,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 }
+
+
 
 // g++ -IC:/Users/blaik/OneDrive/Desktop/cppinstall/vcpkg/installed/x64-windows/include sockserv.cpp -o sockserv.exe -lws2_32
